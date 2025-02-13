@@ -1,0 +1,51 @@
+CREATE TABLE clients (
+client_id SERIAL PRIMARY KEY, last_name VARCHAR(50) NOT NULL,
+first_name VARCHAR(50) NOT NULL, middle_name VARCHAR(50),
+birth_date DATE NOT NULL);
+
+SET datestyle = "ISO, DMY";
+
+INSERT INTO clients (last_name, first_name, middle_name, birth_date)
+VALUES ('Иванов', 'Иван', 'Петрович', '15-06-1985'),
+('Иванова', 'Мария', 'Сергеевна', '20-09-1987'),
+('Иванов', 'Алексей', 'Иванович', '05-02-2010'),
+('Иванова', 'Елена', 'Викторовна', '10-03-1959'),
+('Петров', 'Сергей', 'Александрович', '05-12-1982');
+
+CREATE TABLE jobs (
+job_id SERIAL PRIMARY KEY, client_id INT NOT NULL,
+position VARCHAR(100) NOT NULL, organization VARCHAR(100) NOT NULL,
+salary NUMERIC(10) NOT NULL,  salary_type VARCHAR(20) NOT NULL,
+start_date DATE NOT NULL,
+CONSTRAINT fk_client_job FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE);
+
+INSERT INTO jobs (client_id, position, organization, salary, salary_type, start_date)
+VALUES (1, 'Инженер', 'ООО "ТехноСервис"', 85000, 'RUB', '01-03-2015'),
+(2, 'Бухгалтер', 'АО "ФинансГрупп"', 75000, 'RUB', '15-04-2012'),
+(4, 'Репетитор', 'Частная практика', 15000, 'RUB', '10-01-2020'),
+(5, 'Таксист', 'Индивидуальная работа', 30000, 'RUB', '01-09-2020');
+
+CREATE TABLE products (
+product_id SERIAL PRIMARY KEY, product_name VARCHAR(100) NOT NULL,
+category VARCHAR(50) NOT NULL, unit_price NUMERIC(10) NOT NULL,
+price_type VARCHAR(20) NOT NULL);
+
+INSERT INTO products (product_name, category, unit_price, price_type)
+VALUES ('Хлеб', 'Продукты', 50, 'RUB'), ('Молоко', 'Продукты', 80, 'RUB'),
+('Бензин', 'Транспорт', 80, 'RUB'), ('Билет в кино', 'Развлечения', 300, 'RUB'),
+('Зимнее пальто', 'Одежда', 8500, 'RUB'), ('Учебники', 'Образование', 400, 'RUB'),
+('Лекарства', 'Здоровье', 25000, 'RUB'), ('Погашение кредита', 'Кредиты', 89000, 'RUB'),
+('Смартфон в подарок', 'Подарки', 99900, 'RUB');
+
+CREATE TABLE purchases (
+purchase_id SERIAL PRIMARY KEY, purchase_date DATE NOT NULL,
+client_id INT NOT NULL, product_id INT NOT NULL, quantity INT NOT NULL,
+CONSTRAINT fk_client_purchase FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE,
+CONSTRAINT fk_product_purchase FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE);
+
+INSERT INTO purchases (purchase_date, client_id, product_id, quantity)
+VALUES ('01-02-2025', 1, 1, 2), ('01-02-2025', 1, 2, 3),
+('01-02-2025', 1, 2, 1), ('06-02-2025', 2, 5, 1),
+('09-02-2025', 5, 3, 30), ('12-02-2025', 4, 7, 5),
+('18-02-2025', 1, 8, 1), ('22-02-2025', 2, 9, 1),
+('22-02-2025', 3, 4, 1);
